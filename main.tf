@@ -7,11 +7,20 @@ provider "aws" {
 # S3 bucket — public, no encryption
 resource "aws_s3_bucket" "data" {
   bucket = "my-company-prod-data"
-  acl    = "public-read"                    # Publicly readable
+  acl    = "private"
 
   versioning {
     enabled = false                         # No versioning
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "data" {
+  bucket = aws_s3_bucket.data.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "data" {
